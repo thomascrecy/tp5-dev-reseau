@@ -8,31 +8,31 @@ s.send('Hello'.encode())
 # On reçoit la string Hello
 data = s.recv(1024)
 
-# Récupération d'une string utilisateur
-msg = input("Calcul à envoyer: ")
-
-def is_valid_expression(expression):
-    pattern = r'^\s*(-?\d{1,7})\s*([+\-*])\s*(-?\d{1,7})\s*$'
-    match = re.match(pattern, expression)
-    
+def is_calcul(value: str):
+    # Utilisation de re pour capturer les deux nombres et l'opérateur
+    match = re.search(r'^(-?\d+)\s*([\+\-\*])\s*(-?\d+)$', value)
     if match:
-        x, operator, y = match.groups()
-        x, y = int(x), int(y)
-        if -1048575 <= x <= 1048575 and -1048575 <= y <= 1048575:
-            return expression
+        num1 = int(match.group(1))
+        num2 = int(match.group(3))
+        return num1, num2, match.group(2)  # On retourne les deux nombres et l'opérateur
     return None
 
-# Loop until valid expression
-while True:
-    msg = input("Calcul à envoyer: ")
-    valid_msg = is_valid_expression(msg)
-    if valid_msg:
-        break
-    print("ERROR: Veuillez entrer des nombres entre -1048575 et +1048575.")
+# Récupération d'une string utilisateur
+msg = input("Calcul à envoyer: ")
+result = is_calcul(msg)
 
+if not result:
+    raise ValueError("Ceci n'est pas un calcul")
+
+num1, num2, operator = result
+
+# Vérif si les nombres sont compris entre -1048575 et +1048575
+min_value, max_value = -1048575, 1048575
+if not (min_value <= num1 <= max_value and min_value <= num2 <= max_value):
+    raise ValueError("Les nombres doivent être compris entre -1048575 et +1048575")
 
 # on encode le message explicitement en UTF-8 pour récup un tableau de bytes
-encoded_msg = valid_msg.encode('utf-8')
+encoded_msg = msg.encode('utf-8')
 
 # on calcule sa taille, en nombre d'octets
 msg_len = len(encoded_msg)
