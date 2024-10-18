@@ -3,10 +3,6 @@ import re
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(('10.4.4.11', 13337))
-s.send('Hello'.encode())
-
-# On reçoit la string Hello
-data = s.recv(1024)
 
 def is_calcul(value: str):
     return re.search(r'^(-?\d+)\s*[\+\-\*]\s*(-?\d+)$', value)
