@@ -7,15 +7,20 @@ s.connect(('10.4.4.11', 13337))
 def is_calcul(value: str):
     return re.search(r'^(-?\d+)\s*[\+\-\*]\s*(-?\d+)$', value)
 
+def check_under_4bytes(l:list):
+    return 0==len([int(x) for x in l if int(x) >= 4294967295])
+
 # Récupération d'une string utilisateur
 msg = input("Calcul à envoyer: ")
 if not is_calcul(msg):
     raise ValueError("Ceci n'est pas un calcul")
 
-# Verif si les nombres sont compris entre -1048575 et +1048575
-# print("ERROR: Veuillez entrer des nombres entre -1048575 et +1048575.")
+values = re.split(r"\s*[\+\-\*]\s*", msg)
+if not check_under_4bytes(values):
+    raise ValueError("Valeur trop grande")
 
 # on encode le message explicitement en UTF-8 pour récup un tableau de bytes
+msg += "<clafin>"
 encoded_msg = msg.encode('utf-8')
 
 # on calcule sa taille, en nombre d'octets
