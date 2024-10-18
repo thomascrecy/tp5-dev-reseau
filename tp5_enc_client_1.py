@@ -12,25 +12,27 @@ data = s.recv(1024)
 msg = input("Calcul à envoyer: ")
 
 def is_valid_expression(expression):
-    # Expression régulière pour vérifier le format "nombre opérateur nombre"
     pattern = r'^\s*(-?\d{1,7})\s*([+\-*])\s*(-?\d{1,7})\s*$'
     match = re.match(pattern, expression)
     
     if match:
         x, operator, y = match.groups()
         x, y = int(x), int(y)
-        # Vérifier si les nombres sont dans les limites autorisées
         if -1048575 <= x <= 1048575 and -1048575 <= y <= 1048575:
-            return True
-    return False
+            return expression
+    return None
 
-while not is_valid_expression(msg):
-    print("ERROR : Veuillez entrer des nombres entre -1048575 et +1048575.")
-    msg = input("Calcul à envoyer : ")
+# Loop until valid expression
+while True:
+    msg = input("Calcul à envoyer: ")
+    valid_msg = is_valid_expression(msg)
+    if valid_msg:
+        break
+    print("ERROR: Veuillez entrer des nombres entre -1048575 et +1048575.")
 
 
 # on encode le message explicitement en UTF-8 pour récup un tableau de bytes
-encoded_msg = is_valid_expression(msg).encode('utf-8')
+encoded_msg = valid_msg.encode('utf-8')
 
 # on calcule sa taille, en nombre d'octets
 msg_len = len(encoded_msg)
