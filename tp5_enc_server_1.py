@@ -3,9 +3,10 @@ import socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind(('10.4.4.11', 13337))  
-
 s.listen(1)
 conn, addr = s.accept()
+
+END_MESSAGE = "<clafin>"
 
 while True:
     # On lit les 4 premiers octets qui arrivent du client
@@ -25,8 +26,7 @@ while True:
     bytes_received = 0
     while bytes_received < msg_len:
         # Si on reçoit + que la taille annoncée, on lit 1024 par 1024 octets
-        chunk = conn.recv(min(msg_len - bytes_received,
-                                1024))
+        chunk = conn.recv(min(msg_len - bytes_received, 1024))
         if not chunk:
             raise RuntimeError('Invalid chunk received bro')
 
@@ -38,7 +38,13 @@ while True:
 
     # ptit one-liner pas combliqué à comprendre pour assembler la liste en un seul message
     message_received = b"".join(chunks).decode('utf-8')
-    print(f"Received from client {message_received}")
+    end_check = message_received[-(len(END_MESSAGE)):]
+    message = message_received[:len(message_received)-len(END_MESSAGE)]
+
+    if end_check == END_MESSAGE:
+        print(f"Received from client {message}")
+    else:
+        print("Aucun séquence de fin trouvée")
 
 conn.close()
 s.close()
