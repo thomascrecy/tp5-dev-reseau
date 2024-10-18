@@ -20,9 +20,6 @@ values = re.split(r"\s*[\+\-\*]\s*", msg)
 if not check_under_4bytes(values):
     raise ValueError("Valeur trop grande")
 
-# Récupération d'une string utilisateur
-msg = input("Calcul à envoyer: ")
-
 numbers = re.findall(r'\d+', msg)
 
 # Récuper les chiffres et les mettres en variables
@@ -40,10 +37,10 @@ shifted_i = i << 4 # ça donne 0001 0000
 final = shifted_i | j # le OU logique est parfait pour cette situation
 
 # On envoie
-print(final)
+print(final.encode())
 s.send(final.encode())
 
 # Réception et affichage du résultat
-s_data = s.recv(1024)
-print(s_data.decode())
+#s_data = s.recv(1024)
+#print(s_data.decode())
 s.close()
