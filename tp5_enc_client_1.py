@@ -11,7 +11,7 @@ data = s.recv(1024)
 msg = input("Calcul à envoyer: ")
 
 # Verif input de l'utilisateur
-if msg < -1048575 or msg > +1048575 :
+if msg < int(-1048575) or msg > int(+1048575) :
     print("Erreur, veuillez entrez des nombres compris entre -1048575 et +1048575")
     msg = input("Calcul à envoyer: ")
 
