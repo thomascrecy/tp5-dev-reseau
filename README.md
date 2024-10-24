@@ -34,5 +34,14 @@ HTTP/1.0 200 OK
 ## 3. Délivrer des pages web
 ### 🌞 tp5_web_serv_3.py
 ```
+[toto@bsclient tp5-dev-reseau]$ curl 10.4.4.11:13337/toto.html
+C'est mon site wesh
+[toto@bsclient tp5-dev-reseau]$ curl 10.4.4.11:13337
+<h1>Hello je suis un serveur HTTP</h1>
+```
+
+## 4. Quelques logs
+### 🌞 tp5_web_serv_4.py
+```
 
 ```
