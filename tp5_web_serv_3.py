@@ -17,10 +17,10 @@ while True:
             file = open('toto.html')
             html_content = file.read()
             file.close()
-            response = http_response = 'HTTP/1.0 200 OK\n\n' + html_content
+            response = http_response = 'HTTP/1.0 200 OK\n\n' + html_content + '\n'
             client.send(response.encode())
         elif "GET /" in data:
-            response = "HTTP/1.0 200 OK\n\n<h1>Hello je suis un serveur HTTP</h1>"
+            response = "HTTP/1.0 200 OK\n\n<h1>Hello je suis un serveur HTTP</h1>\n"
             client.send(response.encode())
         break
 

@@ -43,5 +43,13 @@ C'est mon site wesh
 ## 4. Quelques logs
 ### 🌞 tp5_web_serv_4.py
 ```
+[toto@bsserver tp5-dev-reseau]$ sudo cat /var/log/bs_server/bs_server2.log
+2024-10-24 11:52 INFO Le client a téléchargé toto.html".
+2024-10-24 11:52 INFO Le client a téléchargé index.html".
+```
+
+## 5. File download
+### 🌞 tp5_web_serv_5.py
+```
 
 ```
