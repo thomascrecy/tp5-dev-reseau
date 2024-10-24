@@ -17,14 +17,22 @@
 ## II. Serveur Web et HTTP
 
 ## 1. Serveur Web
-
 ### 🌞 tp5_web_serv_1.py
 ```
 [toto@bsclient tp5-dev-reseau]$ curl 10.4.4.11:13337
 <h1>Hello je suis un serveur HTTP</h1>
 ```
-
+## 2. Client Web
 ### 🌞 tp5_web_client_2.py
+```
+[toto@bsclient tp5-dev-reseau]$ python tp5_web_client_2.py
+HTTP/1.0 200 OK
+
+<h1>Hello je suis un serveur HTTP</h1>
+```
+
+## 3. Délivrer des pages web
+### 🌞 tp5_web_serv_3.py
 ```
 
 ```
