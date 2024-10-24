@@ -4,8 +4,8 @@ import logging
 import time
 
 ##### LOGS #######
-LOG_DIR = "/tp5-dev-reseau/bs_server"
-LOG_FILE = "bs_server.log"
+LOG_DIR = "/var/log/bs_server"
+LOG_FILE = "bs_server2.log"
 
 def format(self, record):
         log_fmt = self.FORMATS.get(record.levelno)
