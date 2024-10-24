@@ -1,26 +1,63 @@
 import socket
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind(('10.4.4.11', 13337))  
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+sock.bind(('10.4.4.11', 13337))
+sock.listen()
+client, client_addr = sock.accept()
 
-s.listen(1)
-conn, addr = s.accept()
 
-# Receive a byte from the client
-data = conn.recv(1)  # We expect to receive 1 byte
-if data:
-    # Since data is received as bytes, convert to an integer
-    received_value = data[0]  # Get the integer value of the byte
+def binToSigns(signsInt):
+    result = ""
+    valueSign = signsInt & 0b1
 
-    # Extract i and j
-    i = (received_value >> 4) & 0x0F  # Get the upper 4 bits
-    j = received_value & 0x0F          # Get the lower 4 bits
+    if valueSign == 0b0:
+        result = "-"
+    
+    signsInt = signsInt >> 1
+    if signsInt == 0b01:
+        result = "-" + result
+    elif signsInt == 0b10:
+        result = "*" + result
+    else:
+        result = "+" + result
+    return result
 
-    print(f"Received i: {i}, j: {j}")
+def dataToCalcul(data):
+    value1 = data >> 24
+    value2 = 0xFFFFFF & data
 
-# Evaluation et envoi du résultat
-# res  = eval(data.decode())
-# conn.send(str(res).encode())
+    value1_signs_bin = value1 >> 20
+    value1 = str(0xFFFFF & value1)
+    value1_signs = binToSigns(value1_signs_bin)
 
-conn.close()
+    value2_signs_bin = value2 >> 20
+    value2 = str(0xFFFFF & value2)
+    value2_signs = binToSigns(value2_signs_bin)
+
+    return value1_signs + value1 + value2_signs + value2
+
+while True:
+    header = client.recv(1)
+    if not header:
+        break
+
+    msg_len = int.from_bytes(header, byteorder='big')
+    chunks = []
+    bytes_received = 0
+    while bytes_received < msg_len:
+        chunk = client.recv(min(msg_len - bytes_received, 1024))
+        if not chunk:
+            raise RuntimeError('Invalid chunk received bro')
+
+        chunks.append(chunk)
+
+        bytes_received += len(chunk)
+
+    value_data = int.from_bytes(chunks[0], byteorder='big')
+    calcul = dataToCalcul(value_data)
+
+    client.send((f"Le résultat est {eval(calcul)}").encode())
+
+client.close()
+sock.close()
