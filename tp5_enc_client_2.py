@@ -4,22 +4,28 @@ import re
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(('10.4.4.11', 13337))
 
+# Verifie si l'input est un calcul (+/-/*)
 def is_calcul(value: str):
     return re.search(r'^([\-+]?\d+)\s*[\+\-\*]\s*([\-+]?\d+)$', value)
 
+# Récupère les nombres/chiffres dans la string
 def parse_numbers(msg):
     return re.findall(r'([+-]?\d+)', msg)
 
+# Vérifie que les nombres sont bien inférieurs à 1048575, max 20 bits
 def check_byte_limit(msg):
     numbers = parse_numbers(msg)
     return 0==len([int(x) for x in numbers if abs(int(x)) > 1048575])
 
+# Récupère les nombres et les signes pour le calcul
 def parse_expression(msg):
     return re.findall(r'([+\-]?\d+|[+\-\*\/]{1,2}\d+)', msg)
 
+# Récupère les signes
 def extract_signs(val):
     return re.findall(r'([+\-*]+)?(\d+)', val)[0]
 
+# Convertit les signes en binaire
 def signs_to_bin(signs):
     result = 0
 
@@ -37,6 +43,7 @@ def signs_to_bin(signs):
 
     return result
 
+# Convertit le calcul en bytes
 def calcul_to_byte(msg):
     values = parse_expression(msg)
     values_unsigned = [extract_signs(v) for v in values]
@@ -57,6 +64,7 @@ def calcul_to_byte(msg):
 
     return result, final_length
 
+# Demande un calcul à l'utilisateur et l'encode
 msg = input("Calcul à envoyer: ")
 
 if not is_calcul(msg):
@@ -65,6 +73,7 @@ if not is_calcul(msg):
 if not check_byte_limit(msg):
     raise ValueError("Valeur trop grande")
 
+# Le message encodé est envoyé au serveur avec un header indiquand la longueur du message
 encoded_msg, encoded_msg_length = calcul_to_byte(msg)
 header = encoded_msg_length.to_bytes(1, byteorder='big')
 payload = header + encoded_msg

@@ -6,7 +6,7 @@ sock.bind(('10.4.4.11', 13337))
 sock.listen()
 client, client_addr = sock.accept()
 
-
+# Convertit les bits en signes
 def binToSigns(signsInt):
     result = ""
     valueSign = signsInt & 0b1
@@ -23,6 +23,7 @@ def binToSigns(signsInt):
         result = "+" + result
     return result
 
+# Récupère les données binaires, détermine les signe et retourne le calcul
 def dataToCalcul(data):
     value1 = data >> 24
     value2 = 0xFFFFFF & data
@@ -37,6 +38,7 @@ def dataToCalcul(data):
 
     return value1_signs + value1 + value2_signs + value2
 
+# Tourne en boucle pour recevoir des données client
 while True:
     header = client.recv(1)
     if not header:
@@ -54,9 +56,11 @@ while True:
 
         bytes_received += len(chunk)
 
+    # Converti le message en entier
     value_data = int.from_bytes(chunks[0], byteorder='big')
     calcul = dataToCalcul(value_data)
 
+    # Envoi le résultat du calcul au client
     client.send((f"Le résultat est {eval(calcul)}").encode())
 
 client.close()
