@@ -19,4 +19,12 @@
 ## 1. Serveur Web
 
 ### 🌞 tp5_web_serv_1.py
+```
+[toto@bsclient tp5-dev-reseau]$ curl 10.4.4.11:13337
+<h1>Hello je suis un serveur HTTP</h1>
+```
 
+### 🌞 tp5_web_client_2.py
+```
+
+```
